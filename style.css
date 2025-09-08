@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --main-bg: hsl(222, 26%, 31%);
+    --keypad-bg: hsl(223, 31%, 20%);
+    --toggle-bg: hsl(223, 31%, 20%);
+    --screen-bg: hsl(223, 31%, 20%);
+    --key-bg-primary:  hsl(0, 0%, 90%);
+    --key-shadow-primary:  hsl(28, 16%, 65%);
+    --key-bg-secondary: hsl(225, 21%, 49%);
+    --key-shadow-secondary: hsl(224, 28%, 35%);
+    --key-bg-accent: hsl(6, 63%, 50%);
+    --key-shadow-accent: hsl(6, 70%, 34%);
+    --key-hover-primary: #f2f2f2;
+    --key-hover-secondary: #a2b3e1;
+    --key-hover-accent: #fa6c5c;
+    --text-header: hsl(0, 100%, 100%); 
+    --text-display: hsl(0, 100%, 100%); 
+    --text-keyboard-1: hsl(221, 14%, 31%);
+    --text-keyboard-2:hsl(0, 100%, 100%);
+}
+
+[data-theme="theme2"] {
+    --main-bg: hsl(0, 0%, 90%);
+    --keypad-bg: hsl(0, 5%, 81%);
+    --toggle-bg: hsl(0, 5%, 81%);
+    --screen-bg: hsl(0, 5%, 81%);
+    --key-bg-primary: hsl(0, 0%, 90%);
+    --key-shadow-primary: hsl(35, 11%, 61%);
+    --key-bg-secondary: hsl(185, 42%, 37%);
+    --key-shadow-secondary: hsl(185, 58%, 25%);
+    --key-bg-accent: hsl(25, 98%, 40%);
+    --key-shadow-accent: hsl(25, 99%, 27%);
+    --key-hover-primary: #ffffff;
+    --key-hover-secondary: #62b5bd;
+    --key-hover-accent: #ff8b38;
+    --text-header: hsl(60, 10%, 19%);
+    --text-display: hsl(60, 10%, 19%);
+    --text-keyboard-1: hsl(60, 10%, 19%);
+    --text-keyboard-2:hsl(0, 100%, 100%);
+}
+
+[data-theme="theme3"] {
+    --main-bg: hsl(268, 75%, 9%);
+    --keypad-bg: hsl(268, 71%, 12%);
+    --toggle-bg: hsl(268, 71%, 12%);
+    --screen-bg: hsl(268, 71%, 12%);
+    --key-bg-primary: hsl(268, 47%, 21%);
+    --key-shadow-primary: hsl(290, 70%, 36%);
+    --key-bg-secondary: hsl(281, 89%, 26%);
+    --key-shadow-secondary: hsl(285, 91%, 52%);
+    --key-bg-accent: hsl(176, 100%, 44%);
+    --key-shadow-accent: hsl(177, 92%, 70%);
+    --key-hover-primary: #6b34ac;
+    --key-hover-secondary: #8730b0;
+    --key-hover-accent: #94fff9;
+    --text-header: hsl(52, 100%, 62%);
+    --text-display: hsl(52, 100%, 62%);
+    --text-keyboard-1: hsl(52, 100%, 62%);
+    --text-keyboard-2:hsl(0, 100%, 100%);
+}
+
+body {
+    font-family: 'Montserrat', sans-serif !important;
+    background-color: var(--main-bg) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#calculator-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: var(--main-bg);
+    color: var(--text-header) !important;
+    gap: 0.5rem !important;
+}
+
+#display {
+    background-color: var(--screen-bg);
+    color: var(--text-display);
+}
+
+.key-container {
+    background-color: var(--keypad-bg);
+    color: var(--text-keyboard-1);
+}
+
+#calculator-container button{
+    font-weight: bold;
+    background-color: var(--key-bg-primary);
+    color: var(--text-keyboard-1);
+    box-shadow: 0px 4px var(--key-shadow-primary);
+}
+
+button:hover {
+    background-color: var(--key-hover-primary) !important;
+}
+
+#del, #clear {
+    background-color: var(--key-bg-secondary) !important;
+    color: var(--text-keyboard-2) !important;
+    box-shadow: 0px 4px var(--key-shadow-secondary) !important;
+}
+
+#del:hover, #clear:hover {
+    background-color: var(--key-hover-secondary) !important;
+}
+
+#equals {
+    background-color: var(--key-bg-accent) !important;
+    color: var(--text-keyboard-2);
+    box-shadow: 0px 4px var(--key-shadow-accent) !important;
+}
+
+#equals:hover {
+    background-color: var(--key-hover-accent) !important;
+}
+
+footer {
+    color: var(--text-header);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  width: 100px;
+}
+  
+.toggle-numbers {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.toggle-slider {
+  width: 100%;
+  position: relative;
+}
+
+.range-slider {
+  width: 100%;
+  appearance: none;
+  height: 1.5rem;
+  border-radius: 1rem;
+  background: var(--toggle-bg);
+  outline: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: background 0.3s ease;
+}
+
+.range-slider::-webkit-slider-thumb {
+  background-color: var(--key-bg-accent) !important;
+}

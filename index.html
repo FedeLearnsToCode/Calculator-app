@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+  <title>Calculator app</title>
+
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- app.js -->
+  <script type="text/babel">
+
+    const App = () => {
+
+      const [theme, setTheme] = React.useState('theme1');
+
+      React.useEffect(() => {
+        document.body.setAttribute('data-theme', theme);
+      }, [theme]);
+
+      const [inputValue, setInputValue] = React.useState('');
+      const [displayValue, setDisplayValue] = React.useState('0');
+      const [justCalcolated, setJustCalcolated] = React.useState(false);
+
+      const handleInput = (val) => {
+        if (justCalcolated && /[0-9.]/.test(val)) {
+          setInputValue(val);
+          setDisplayValue(val);
+          setJustCalcolated(false);
+          return;
+        }
+
+        if (justCalcolated && /[+\-*/]/.test(val)) {
+          setInputValue(displayValue + val);
+          setDisplayValue(displayValue + val);
+          setJustCalcolated(false);
+          return;
+        }
+
+        if (inputValue === '' && ['+', '*', '/', '0'].includes(val)) return;
+
+        const operators = ['+', '-', '*', '/'];
+        const lastChar = inputValue.slice(-1);
+
+        if (operators.includes(val)) {
+          const operatorSequence = inputValue.match(/[\+\-\*\/]+$/);
+
+          if (inputValue === '' && val !== '-') return;
+
+          if (operatorSequence) {
+            const sequence = operatorSequence[0];
+
+            if (val === '-' && !sequence.includes('-')) {
+              setInputValue(inputValue + val);
+              setDisplayValue(inputValue + val);
+              return;
+            }
+
+            const newInput = inputValue.slice(0, -sequence.length) + val;
+            setInputValue(newInput);
+            setDisplayValue(newInput);
+            return;
+          }
+        }
+
+        const parts = inputValue.split(/[\+\-\*\/]/);
+        const lastNumber = parts[parts.length - 1];
+
+        if (lastNumber === '0' && val === '0') return;
+
+        if (lastNumber === '0' && /[1-9.]/.test(val)) {
+          const newInput = inputValue.slice(0, -1) + val;
+          setInputValue(newInput);
+          setDisplayValue(newInput);
+          return;
+        }
+
+        if (val === '.') {
+          if (lastNumber.includes('.')) return;
+
+          if (inputValue === '' || operators.includes(lastChar)) {
+            const newInput = inputValue + '0.';
+            setInputValue(newInput);
+            setDisplayValue(newInput);
+            return;
+          }
+        }
+
+        const newInput = inputValue + val;
+        setInputValue(newInput);
+        setDisplayValue(newInput);
+      }
+
+      const clearCalculator = () => {
+        setInputValue('');
+        setDisplayValue("0");
+      };
+
+      const deleteLast = () => {
+        const newInput = inputValue.slice(0, -1);
+        setInputValue(newInput);
+        setDisplayValue(newInput === '' ? '0' : newInput);
+      }
+
+      const calculateResult = () => {
+        try {
+          const expression = inputValue.replace(/x/g, '*');
+          const result = Function(`"use strict"; return (${expression})`)();
+          setDisplayValue(String(result));
+          setInputValue(String(result));
+          setJustCalcolated(true);
+        } catch (e) {
+          setDisplayValue('Error');
+          setInputValue('');
+          setJustCalcolated(false);
+        }
+      };
+
+      return (
+        <div id='calculator-container' className='container rounded-4'>
+          <div className='col-12 mb-3 d-flex justify-content-between align-items-center'>
+            <h1 className='col-6 fw-bold'>calc</h1>
+            <div className='col-3 d-flex align-items-center justify-content-end'>
+
+              <div className='theme-switcher d-flex align-items-center'>
+                <label className="theme-label p-3 small fw-bold">THEME</label>
+                <div className="theme-toggle d-flex flex-column align-items-center">
+                  <div className="toggle-numbers">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                  </div>
+                  <div className="toggle-slider">
+                    <input
+                      type="range"
+                      min="1"
+                      max="3"
+                      step="1"
+                      value={theme.replace('theme', '')}
+                      onChange={(e) => setTheme(`theme${e.target.value}`)}
+                      className="range-slider"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className='calculator mt-4'>
+            <div id='display' className='col-12 fs-1 fw-bold text-end rounded-2 p-3'>{displayValue}</div>
+
+            <div className='key-container row g-3 p-3 pb-4 mt-4 rounded-2'>
+              <div className='col-3'><button id="seven" className="btn w-100" onClick={() => handleInput('7')}>7</button></div>
+              <div className='col-3'><button id="eight" className="btn w-100" onClick={() => handleInput('8')}>8</button></div>
+              <div className='col-3'><button id="nine" className="btn w-100" onClick={() => handleInput('9')}>9</button></div>
+              <div className='col-3'><button id="del" className="btn w-100" onClick={deleteLast}>DEL</button></div>
+
+              <div className='col-3'><button id="four" className="btn w-100" onClick={() => handleInput('4')}>4</button></div>
+              <div className='col-3'><button id="five" className="btn w-100" onClick={() => handleInput('5')}>5</button></div>
+              <div className='col-3'><button id="six" className="btn w-100" onClick={() => handleInput('6')}>6</button></div>
+              <div className='col-3'><button id="add" className="btn w-100" onClick={() => handleInput('+')}>+</button></div>
+
+              <div className='col-3'><button id="one" className="btn w-100" onClick={() => handleInput('1')}>1</button></div>
+              <div className='col-3'><button id="two" className="btn w-100" onClick={() => handleInput('2')}>2</button></div>
+              <div className='col-3'><button id="three" className="btn w-100" onClick={() => handleInput('3')}>3</button></div>
+              <div className='col-3'><button id="subtract" className="btn w-100" onClick={() => handleInput('-')}>-</button></div>
+
+              <div className='col-3'><button id="decimal" className="btn w-100" onClick={() => handleInput('.')}>.</button></div>
+              <div className='col-3'><button id="zero" className="btn w-100" onClick={() => handleInput('0')}>0</button></div>
+              <div className='col-3'><button id="divide" className="btn w-100" onClick={() => handleInput('/')}>/</button></div>
+              <div className='col-3'><button id="multiply" className="btn w-100" onClick={() => handleInput('*')}>*</button></div>
+
+              <div className='col-6'><button id="clear" className="btn w-100" onClick={clearCalculator}>RESET</button></div>
+              <div className='col-6'><button id="equals" className="btn w-100" onClick={calculateResult}>=</button></div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+
+  </script>
+
+  <!-- FreeCodeCamp test -->
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+
+  <footer class="container">
+    <div class="row small text-center">
+      <p class="m-0 col-12 col-md-4"> Design by <a href="https://www.frontendmentor.io?ref=challenge"
+          target="_blank">Frontend
+          Mentor</a>
+      </p>
+      <p class="m-0 col-12 col-md-4"> Challenge by <a
+          href="https://www.freecodecamp.org/learn/front-end-development-libraries/front-end-development-libraries-projects/build-a-javascript-calculator"
+          target="_blank">
+          freeCodeCamp</a>
+      </p>
+      <p class="m-0 col-12 col-md-4"> Coded by <a href="https://github.com/FedeLearnsToCode">FedeLearnsToCode</a>
+      </p>
+    </div>
+  </footer>
+
+
+</body>
+
+</html>
